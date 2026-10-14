@@ -23,11 +23,11 @@ namespace anikina
           break;
         }
 
-        if (!hasNumbers)
+        if (!has_numbers)
         {
           max = x;
           count = 1;
-          hasNumbers = true;
+          has_numbers = true;
         }
         else if (x > max)
         {
@@ -40,7 +40,7 @@ namespace anikina
         }
       }
 
-      if (!hasNumbers)
+      if (!has_numbers)
       {
         throw 2;
       }
