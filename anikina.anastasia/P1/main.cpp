@@ -4,10 +4,10 @@ namespace anikina
 {
   int run()
   {
-    int x;
+    int x = 0;
     int max = 0;
     int count = 0;
-    bool hasNumbers = false;
+    bool has_numbers = false;
 
     try
     {
