@@ -2,55 +2,70 @@
 
 namespace anikina
 {
-  int countMax()
+  int run()
   {
-    int x = 0, max = 0, count = 0;
+    int x;
+    int max = 0;
+    int count = 0;
+    bool hasNumbers = false;
 
-    if (!(std::cin >> x))
+    try
     {
-      std::cerr << "Input is not a sequence" << std::endl;
-      return 1;
-    }
-
-    if (x == 0)
-    {
-      std::cerr << "Sequence is too short" << std::endl;
-      return 2;
-    }
-
-    max = x;
-    count = 1;
-
-    while (true)
-    {
-      if (!(std::cin >> x))
+      while (true)
       {
-        std::cerr << "Input is not a sequence" << std::endl;
+        if (!(std::cin >> x))
+        {
+          throw 1;
+        }
+
+        if (x == 0)
+        {
+          break;
+        }
+
+        if (!hasNumbers)
+        {
+          max = x;
+          count = 1;
+          hasNumbers = true;
+        }
+        else if (x > max)
+        {
+          max = x;
+          count = 1;
+        }
+        else if (x == max)
+        {
+          count++;
+        }
+      }
+
+      if (!hasNumbers)
+      {
+        throw 2;
+      }
+    }
+    catch (int error)
+    {
+      if (error == 1)
+      {
+        std::cerr << "Input error\n";
         return 1;
       }
 
-      if (x == 0)
+      if (error == 2)
       {
-        break;
-      }
-
-      if (x > max)
-      {
-        max = x;
-        count = 1;
-      }
-      else if (x == max)
-      {
-        count++;
+        std::cerr << "Cannot calculate count max\n";
+        return 2;
       }
     }
 
-    std::cout << count << std::endl;
+    std::cout << count << '\n';
     return 0;
   }
 }
 
 int main()
 {
-  return anikina::countMax();
+  return anikina::run();
 }
