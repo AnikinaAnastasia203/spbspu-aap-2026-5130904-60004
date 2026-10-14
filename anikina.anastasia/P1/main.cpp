@@ -9,63 +9,62 @@ namespace anikina
     int count = 0;
     bool has_numbers = false;
 
-    try
+    while (true)
     {
-      while (true)
+      if (!(std::cin >> x))
       {
-        if (!(std::cin >> x))
-        {
-          throw 1;
-        }
+        throw 1;
+      }
 
-        if (x == 0)
-        {
-          break;
-        }
-
-        if (!has_numbers)
-        {
-          max = x;
-          count = 1;
-          has_numbers = true;
-        }
-        else if (x > max)
-        {
-          max = x;
-          count = 1;
-        }
-        else if (x == max)
-        {
-          count++;
-        }
+      if (x == 0)
+      {
+        break;
       }
 
       if (!has_numbers)
       {
-        throw 2;
+        max = x;
+        count = 1;
+        has_numbers = true;
+      }
+      else if (x > max)
+      {
+        max = x;
+        count = 1;
+      }
+      else if (x == max)
+      {
+        count++;
       }
     }
-    catch (int error)
+
+    if (!has_numbers)
     {
-      if (error == 1)
-      {
-        std::cerr << "Input error\n";
-        return 1;
-      }
-
-      if (error == 2)
-      {
-        std::cerr << "Cannot calculate count max\n";
-        return 2;
-      }
+      throw 2;
     }
 
-    std::cout << count << '\n';
-    return 0;
+    return count;
   }
 }
 
 int main()
 {
-  return anikina::run();
+  try
+  {
+    std::cout << anikina::run() << '\n';
+  }
+  catch (int error)
+  {
+    if (error == 1)
+    {
+      std::cerr << "Input error\n";
+      return 1;
+    }
+
+    if (error == 2)
+    {
+      std::cerr << "Cannot calculate count max\n";
+      return 2;
+    }
+  }
 }
