@@ -41,14 +41,22 @@ int main(int argc, char* argv[])
     {
       try
       {
-        heap = new int[total + 1];
+        heap = new int[total];
       }
       catch (...)
       {
         throw Error{2, "Error: invalid matrix"};
       }
     }
-    int* const a = heap ? heap : st;
+    int* a = nullptr;
+    if (heap != nullptr)
+    {
+      a = heap;
+    }
+    else
+    {
+      a = st;
+    }
 
     bool read_ok = true;
     for (long long i = 0; i < total && read_ok; ++i)
