@@ -1,66 +1,85 @@
 #include <fstream>
 #include <iostream>
-#include <string>
 
-int main(int argc, char *argv[])
+struct Error
 {
-  const std::string n = argc == 4 ? argv[1] : "";
-  if (n != "1" && n != "2")
+  int code;
+  const char* message;
+};
+
+int main(int argc, char* argv[])
+{
+  int* heap = nullptr;
+  try
   {
-    std::cerr << "Usage: ./lab 1|2 input output\n";
-    return 1;
-  }
-
-  std::ifstream in(argv[2]);
-  int rows = 0;
-  int cols = 0;
-  const int max_size = 10000;
-  int st[max_size];
-
-  if (!(in >> rows >> cols) || rows < 0 || cols < 0 || (n == "1" && 1LL * rows * cols > max_size))
-  {
-    std::cerr << "Error: invalid matrix\n";
-    return 2;
-  }
-
-  int *const heap = n == "2" ? new int[1LL * rows * cols + 1] : nullptr;
-  int *const a = heap ? heap : st;
-
-  bool read_ok = true;
-  for (long long i = 0; i < 1LL * rows * cols && read_ok; ++i)
-  {
-    read_ok = bool(in >> a[i]);
-  }
-
-  char trailing = 0;
-  if (!read_ok || (in >> trailing))
-  {
-    delete[] heap;
-    std::cerr << "Error: invalid matrix\n";
-    return 2;
-  }
-
-  int cnt = 0;
-  for (int i = 1; i + 1 < rows; ++i)
-  {
-    for (int j = 1; j + 1 < cols; ++j)
+    if (argc != 4 || (argv[1][0] != '1' && argv[1][0] != '2') || argv[1][1] != '\0')
     {
-      bool is_local_max = true;
-      for (int di = -1; di <= 1; ++di)
+      throw Error{1, "Usage: ./lab 1|2 input output"};
+    }
+    const char num = argv[1][0];
+
+    std::ifstream in(argv[2]);
+    int rows = 0;
+    int cols = 0;
+    int st[10000];
+    if (!(in >> rows >> cols) || rows < 0 || cols < 0 ||
+        (num == '1' && 1LL * rows * cols > 10000))
+    {
+      throw Error{2, "Error: invalid matrix"};
+    }
+    const long long total = 1LL * rows * cols;
+
+    if (num == '2')
+    {
+      try
       {
-        for (int dj = -1; dj <= 1; ++dj)
+        heap = new int[total + 1];
+      }
+      catch (...)
+      {
+        throw Error{2, "Error: invalid matrix"};
+      }
+    }
+    int* a = heap ? heap : st;
+
+    bool readOk = true;
+    for (long long i = 0; i < total && readOk; ++i)
+    {
+      readOk = static_cast<bool>(in >> a[i]);
+    }
+    char trailing;
+    if (!readOk || (in >> trailing))
+    {
+      throw Error{2, "Error: invalid matrix"};
+    }
+
+    int cnt = 0;
+    for (int i = 1; i + 1 < rows; ++i)
+    {
+      for (int j = 1; j + 1 < cols; ++j)
+      {
+        bool isLocalMax = true;
+        for (int di = -1; di <= 1; ++di)
         {
-          if ((di || dj) && a[(i + di) * cols + j + dj] >= a[i * cols + j])
+          for (int dj = -1; dj <= 1; ++dj)
           {
-            is_local_max = false;
+            if ((di || dj) && a[(i + di) * cols + j + dj] >= a[i * cols + j])
+            {
+              isLocalMax = false;
+            }
           }
         }
+        cnt += isLocalMax;
       }
-      cnt += is_local_max;
     }
+    delete[] heap;
+    heap = nullptr;
+    std::ofstream(argv[3]) << cnt << "\n";
   }
-
-  delete[] heap;
-  std::ofstream(argv[3]) << cnt << "\n";
-  return 0;
+  catch (const Error& error)
+  {
+    delete[] heap;
+    std::cerr << error.message << "\n";
+    return error.code;
+  }
 }
