@@ -4,7 +4,7 @@
 namespace anikina
 {
   const int max_size = 10000;
-  int count_local_max(const int* a, int rows, int cols);
+  int countlocalmax(const int* a, int rows, int cols);
 }
 
 int main(int argc, char* argv[])
@@ -67,7 +67,7 @@ int main(int argc, char* argv[])
       throw 2;
     }
 
-    const int cnt = anikina::count_local_max(a, rows, cols);
+    const int cnt = anikina::countlocalmax(a, rows, cols);
     delete[] heap;
     heap = nullptr;
     std::ofstream(argv[3]) << cnt << "\n";
@@ -89,25 +89,25 @@ int main(int argc, char* argv[])
 
 namespace anikina
 {
-  int count_local_max(const int* a, int rows, int cols)
+  int countlocalmax(const int* a, int rows, int cols)
   {
     int cnt = 0;
     for (int i = 1; i + 1 < rows; ++i)
     {
       for (int j = 1; j + 1 < cols; ++j)
       {
-        bool is_local_max = true;
+        bool islocalmax = true;
         for (int di = -1; di <= 1; ++di)
         {
           for (int dj = -1; dj <= 1; ++dj)
           {
             if ((di || dj) && a[(i + di) * cols + j + dj] >= a[i * cols + j])
             {
-              is_local_max = false;
+              islocalmax = false;
             }
           }
         }
-        if (is_local_max)
+        if (islocalmax)
         {
           ++cnt;
         }
