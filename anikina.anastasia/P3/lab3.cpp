@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
     }
 
     std::ifstream in(argv[2]);
-    if (!in)
+    if (!in.is_open())
     {
       throw 3;
     }
@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
     delete[] heap;
     heap = nullptr;
     std::ofstream out(argv[3]);
-    if (!out)
+    if (!out.is_open())
     {
       throw 4;
     }
