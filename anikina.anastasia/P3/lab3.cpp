@@ -1,11 +1,11 @@
 #include <fstream>
 #include <iostream>
 
-struct Error
+namespace anikina
 {
-  int code;
-  const char* message;
-};
+  const int max_size = 10000;
+  int count_local_max(const int* a, int rows, int cols);
+}
 
 int main(int argc, char* argv[])
 {
@@ -14,27 +14,26 @@ int main(int argc, char* argv[])
   {
     if (argc != 4)
     {
-      throw Error{1, "Usage: ./lab 1|2 input output"};
+      throw 1;
     }
     const char num = argv[1][0];
     if ((num != '1' && num != '2') || argv[1][1] != '\0')
     {
-      throw Error{1, "Usage: ./lab 1|2 input output"};
+      throw 1;
     }
 
-    const int max_size = 10000;
     std::ifstream in(argv[2]);
     int rows = 0;
     int cols = 0;
-    int st[max_size];
+    int st[anikina::max_size];
     if (!(in >> rows >> cols) || rows < 0 || cols < 0)
     {
-      throw Error{2, "Error: invalid matrix"};
+      throw 2;
     }
-    const long long total = 1LL * rows * cols;
-    if (num == '1' && total > max_size)
+    const long long total = rows * cols;
+    if (num == '1' && total > anikina::max_size)
     {
-      throw Error{2, "Error: invalid matrix"};
+      throw 2;
     }
 
     if (num == '2')
@@ -45,17 +44,13 @@ int main(int argc, char* argv[])
       }
       catch (...)
       {
-        throw Error{2, "Error: invalid matrix"};
+        throw 2;
       }
     }
-    int* a = nullptr;
+    int* a = st;
     if (heap != nullptr)
     {
       a = heap;
-    }
-    else
-    {
-      a = st;
     }
 
     bool read_ok = true;
@@ -69,9 +64,33 @@ int main(int argc, char* argv[])
     char trailing = 0;
     if (!read_ok || (in >> trailing))
     {
-      throw Error{2, "Error: invalid matrix"};
+      throw 2;
     }
 
+    const int cnt = anikina::count_local_max(a, rows, cols);
+    delete[] heap;
+    heap = nullptr;
+    std::ofstream(argv[3]) << cnt << "\n";
+  }
+  catch (int code)
+  {
+    delete[] heap;
+    if (code == 1)
+    {
+      std::cerr << "Error: wrong arguments\n";
+    }
+    else
+    {
+      std::cerr << "Error: the file does not contain a correct matrix\n";
+    }
+    return code;
+  }
+}
+
+namespace anikina
+{
+  int count_local_max(const int* a, int rows, int cols)
+  {
     int cnt = 0;
     for (int i = 1; i + 1 < rows; ++i)
     {
@@ -94,14 +113,6 @@ int main(int argc, char* argv[])
         }
       }
     }
-    delete[] heap;
-    heap = nullptr;
-    std::ofstream(argv[3]) << cnt << "\n";
-  }
-  catch (const Error& error)
-  {
-    delete[] heap;
-    std::cerr << error.message << "\n";
-    return error.code;
+    return cnt;
   }
 }
