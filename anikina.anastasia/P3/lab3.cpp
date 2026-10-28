@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
       throw 1;
     }
     const char num = argv[1][0];
-    if ((num != '1' && num != '2' && num != '3' && num != '4') || argv[1][1] != '\0')
+    if ((num != '1' && num != '2') || argv[1][1] != '\0')
     {
       throw 1;
     }
@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
     {
       throw 4;
     }
-    out << cnt <<"\n";
+    out << cnt << "\n";
   }
   catch (int code)
   {
