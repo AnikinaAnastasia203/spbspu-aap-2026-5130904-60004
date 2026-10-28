@@ -94,7 +94,7 @@ int main(int argc, char* argv[])
     }
     else if (code == 4)
     {
-      std::cerr << "Error: cannot open output file\n":
+      std::cerr << "Error: cannot open output file\n";
     }
     else if (code == 2)
     {
